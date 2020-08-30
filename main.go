@@ -4,27 +4,20 @@ import (
 	"crypto/sha512"
 	"encoding/base64"
 	"fmt"
+	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
 var serverRequests int
-var averageTime float32
-var reqTimes []float32
+var averageTime float64
 var allTimes float64
 
-// func getTime(time) {
-
-// }
-
 func requestHandler(w http.ResponseWriter, r *http.Request) {
-	srv := &http.Server{Addr: ":8080"}
 	switch r.URL.String() {
 	case "/hash":
 		startTime := time.Now()
 		r.ParseForm()
-		fmt.Println(r.URL)
 		password := r.Form.Get("password")
 		hashedPassword := sha512.Sum512([]byte(password))
 		encodedPassword := base64.StdEncoding.EncodeToString(hashedPassword[:])
@@ -34,11 +27,11 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		allTimes = allTimes + float64(duration)
 		serverRequests++
 	case "/shutdown":
-		srv.Close()
-		fmt.Fprintf(w, "BYE FOR NOW")
+		// if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		log.Fatalf("%s\n", "Shutting down")
+		// }
+		return
 	case "/stats":
-		// allTimes = allTimes/float64(serverRequests)
-		fmt.Fprintf(os.Stderr, "Need some stats?")
 		if serverRequests == 0 {
 			fmt.Fprintf(w, "Duraction: %v\n", 0)
 		} else {
@@ -48,7 +41,6 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	default:
 		return
 	}
-
 }
 
 func handleRequests() {
