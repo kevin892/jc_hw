@@ -27,10 +27,7 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		allTimes = allTimes + float64(duration)
 		serverRequests++
 	case "/shutdown":
-		// if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.Fatalf("%s\n", "Shutting down")
-		// }
-		return
 	case "/stats":
 		if serverRequests == 0 {
 			fmt.Fprintf(w, "average: %v\n", 0)
