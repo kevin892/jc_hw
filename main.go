@@ -21,9 +21,9 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		password := r.Form.Get("password")
 		hashedPassword := sha512.Sum512([]byte(password))
 		encodedPassword := base64.StdEncoding.EncodeToString(hashedPassword[:])
+		duration := time.Since(startTime).Microseconds()
 		time.Sleep(5 * time.Second)
 		fmt.Fprintf(w, encodedPassword)
-		duration := time.Since(startTime).Milliseconds()
 		allTimes = allTimes + float64(duration)
 		serverRequests++
 	case "/shutdown":
@@ -33,11 +33,11 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	case "/stats":
 		if serverRequests == 0 {
-			fmt.Fprintf(w, "Duraction: %v\n", 0)
+			fmt.Fprintf(w, "average: %v\n", 0)
 		} else {
-			fmt.Fprintf(w, "Average Request Speed : %v\n", allTimes/float64(serverRequests))
+			fmt.Fprintf(w, "average: %v\n", allTimes/float64(serverRequests))
 		}
-		fmt.Fprintf(w, "Server Requests: %v\n", serverRequests)
+		fmt.Fprintf(w, "total: %v\n", serverRequests)
 	default:
 		return
 	}
