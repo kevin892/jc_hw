@@ -3,16 +3,22 @@ package main
 import (
 	"crypto/sha512"
 	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
 )
 
-var serverRequests int
-var averageTime float64
-var requestTimes float64
+//Stats data
+type stats struct {
+	Total   int     `json:"total"`
+	Average float64 `json:"average"`
+}
+
 var finishedPasswords []string
+var requestStats stats
+var totalRequestTime float64
 
 func hashPassword(password string) {
 	hashedPassword := sha512.Sum512([]byte(password))
@@ -25,8 +31,9 @@ func encodePassword(password [64]byte) {
 }
 
 func addToCounter(duration int64) {
-	requestTimes = requestTimes + float64(duration)
-	serverRequests++
+	totalRequestTime += float64(duration)
+	requestStats.Total++
+	requestStats.Average = totalRequestTime / float64(requestStats.Total)
 }
 
 func requestHandler(w http.ResponseWriter, r *http.Request) {
@@ -34,25 +41,21 @@ func requestHandler(w http.ResponseWriter, r *http.Request) {
 	case "/hash":
 		startTime := time.Now()
 		r.ParseForm()
-		if r.Form.Get("password") == "" {
-			fmt.Fprintf(w, "Error - 'password' not found!")
-		} else {
+		if r.Form.Get("password") != "" {
 			password := r.Form.Get("password")
 			hashPassword(password)
 			duration := time.Since(startTime).Microseconds()
 			time.Sleep(5 * time.Second)
-			fmt.Fprintf(w, finishedPasswords[serverRequests])
+			fmt.Fprintf(w, finishedPasswords[requestStats.Total])
 			addToCounter(duration)
+		} else {
+			fmt.Fprintf(w, "Error - 'password' not found!")
 		}
 	case "/shutdown":
 		log.Fatalf("%s\n", "Shutting down")
 	case "/stats":
-		if serverRequests == 0 {
-			fmt.Fprintf(w, "average: %v\n", 0)
-		} else {
-			fmt.Fprintf(w, "average: %v\n", requestTimes/float64(serverRequests))
-		}
-		fmt.Fprintf(w, "total: %v\n", serverRequests)
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(requestStats)
 	default:
 		return
 	}
@@ -66,8 +69,6 @@ func handleRequests() {
 }
 
 func main() {
-	serverRequests = 0
-	averageTime = 0
 	handleRequests()
 }
 
