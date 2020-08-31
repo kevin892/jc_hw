@@ -71,5 +71,3 @@ func handleRequests() {
 func main() {
 	handleRequests()
 }
-
-// curl -w '\n' -d "password=angryMonkey" -X POST http://localhost:8080/hash
