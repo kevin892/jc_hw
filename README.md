@@ -23,20 +23,21 @@ curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 
 ### GET /stats  
 
-###### Example request
+##### Example request
 curl -X GET http://localhost:8080/stats
 
-#JSON object is returned with two k-v pairs.
+*Note: Object values are reset when server is shutdown
+*Note: JSON object is returned with two k-v pairs.
 
 --“total” - total number of requests will server is running
 
 --“average” - average time in microseconds for all POST requests to /hash endpoint. (Time taken to revive, hash, encode, password)
 
-*Note: Object values are reset when server is shutdown
 
-##### GET /shutdown
 
-#Example request#
+### GET /shutdown
+
+##### Example request
 curl -X GET http://localhost:8080/shutdown
 
 *Note: Server is immediately shutdown.
