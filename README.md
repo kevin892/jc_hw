@@ -18,7 +18,9 @@
 curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 
 *Note: When password is not present in body of request ||  value == "", response will be: "Error - 'password' not found!"
+
 *Note: Password is tased with SHA512 as hashing algorithm and a Base64 encoded string is returned. 
+
 *Note: Server will respond with password in ~5 seconds .
 
 ### GET /stats  
@@ -27,6 +29,7 @@ curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 curl -X GET http://localhost:8080/stats
 
 *Note: Object values are reset when server is shutdown
+
 *Note: JSON object is returned with two k-v pairs.
 
 --“total” - total number of requests will server is running
