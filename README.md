@@ -13,9 +13,9 @@ GET /shutdown
 ####### POST /hash #######
 
 #Example request
-curl -d "password=angryMonkey" -X POST http://localhost:8080/shutdown
+curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 
-#Note: When password is not present in body of request with value, response will be: "Error - 'password' not found!"
+#Note: When password is not present in body of request ||  value == "", response will be: "Error - 'password' not found!"
 
 #Password is tased with SHA512 as hashing algorithm and a Base64 encoded string is returned. 
 
