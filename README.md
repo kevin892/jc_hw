@@ -12,7 +12,7 @@ GET /shutdown
 
 ####### POST /hash #######
 
-#Example request
+#Example request#
 curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 
 #Note: When password is not present in body of request ||  value == "", response will be: "Error - 'password' not found!"
@@ -23,7 +23,7 @@ curl -d "password=angryMonkey" -X POST http://localhost:8080/hash
 
 ####### GET /stats #######
 
-#Example request
+#Example request#
 curl -X GET http://localhost:8080/stats
 
 #JSON object is returned with two k-v pairs.
